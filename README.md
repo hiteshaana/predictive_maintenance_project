@@ -161,3 +161,467 @@ The following engineered features are created:
 ```text
 Temperature_Difference =
 Coolant_Temp - Lub_Oil_Temp
+
+This represents the temperature gap between the cooling and lubrication systems.
+
+Total Pressure
+Total_Pressure =
+Fuel_Pressure +
+Lub_Oil_Pressure +
+Coolant_Pressure
+
+This provides an aggregated pressure indicator across major engine systems.
+
+Pressure Ratio
+Pressure_Ratio =
+Fuel_Pressure / Lub_Oil_Pressure
+
+This captures the relative relationship between fuel and lubrication pressure.
+
+RPM-Temperature Interaction
+RPM_Temperature_Interaction =
+Engine_RPM × Coolant_Temp
+
+This captures the combined effect of engine operating speed and coolant temperature.
+
+These engineered variables are included in the model training dataset.
+
+7. Data Preparation
+
+The data preparation pipeline performs:
+
+Removal of unnecessary identifier/index columns.
+Duplicate record removal.
+Numeric type conversion.
+Missing-value handling.
+Feature engineering.
+Infinite-value handling.
+Stratified train/test splitting.
+
+The dataset is split into:
+
+Training dataset: 80%
+Testing dataset: 20%
+
+Stratification is used to preserve the target-class distribution between training and testing datasets.
+
+The processed datasets are saved as:
+
+train.csv
+test.csv
+
+and uploaded to the Hugging Face Dataset repository.
+
+8. Machine Learning Models
+
+Multiple classification algorithms are benchmarked:
+
+Decision Tree
+Random Forest
+AdaBoost
+Gradient Boosting
+
+The models are evaluated using:
+
+Accuracy
+Precision
+Recall
+F1-Score
+ROC-AUC
+
+Model selection considers F1-Score, Recall and ROC-AUC in addition to overall accuracy.
+
+9. Hyperparameter Tuning
+
+Random Forest is selected for optimization.
+
+GridSearchCV is used with:
+
+5-fold cross-validation
+F1 scoring
+Parallel processing
+
+The tuned parameters include:
+
+n_estimators
+max_depth
+min_samples_split
+min_samples_leaf
+max_features
+
+The complete GridSearchCV results are retained for analysis and reproducibility.
+
+The best hyperparameters are also saved in:
+
+best_parameters.json
+10. Final Model Evaluation
+
+The final optimized Random Forest model is evaluated using:
+
+Accuracy
+Precision
+Recall
+F1-Score
+ROC-AUC
+Confusion Matrix
+ROC Curve
+Feature Importance
+Classification Report
+
+The following artifacts are generated:
+
+final_model_metrics.csv
+classification_report.csv
+confusion_matrix.png
+roc_curve.png
+feature_importance.png
+feature_importance.csv
+best_parameters.json
+
+The final trained model is saved as:
+
+best_model.pkl
+11. Model Performance
+
+The final model achieved the following test-set performance:
+
+Metric	Score
+Accuracy	0.6488
+Precision	0.6860
+Recall	0.8169
+F1-Score	0.7457
+ROC-AUC	0.6729
+Business Interpretation
+
+Recall is particularly important in predictive maintenance because missing an engine condition requiring attention can potentially result in an unexpected equipment failure.
+
+The final model achieved a recall of approximately 81.69%, indicating that it identifies a substantial proportion of positive maintenance-related conditions.
+
+The model should therefore be considered as an early-warning decision-support mechanism rather than a replacement for engineering inspection and maintenance procedures.
+
+12. Model Explainability
+
+Feature importance from the optimized Random Forest model is generated to identify the sensor and engineered variables contributing most strongly to the model's predictions.
+
+The feature importance analysis can help maintenance teams understand which operational parameters should receive greater monitoring attention.
+
+13. MLflow Experiment Tracking
+
+MLflow is used to track the final model experiment.
+
+The experiment records:
+
+Model name
+Tuning method
+Cross-validation folds
+Hyperparameters
+Accuracy
+Precision
+Recall
+F1-Score
+ROC-AUC
+Confusion matrix
+ROC curve
+Feature importance
+Classification report
+Model artifact
+MLflow Experiment
+Predictive_Maintenance_Project
+
+The optimized Random Forest run is recorded as:
+
+Optimized_Random_Forest
+
+This provides experiment reproducibility and centralized tracking of model performance and artifacts.
+
+14. Hugging Face Dataset Repository
+
+The project uses the Hugging Face Dataset Hub for centralized dataset management.
+
+The repository contains:
+
+engine_data.csv
+train.csv
+test.csv
+
+The model-training workflow reloads train.csv and test.csv directly from the Hugging Face Dataset repository rather than relying exclusively on local copies.
+
+This supports reproducibility and centralized dataset management.
+
+15. Hugging Face Model Repository
+
+The trained model artifacts are registered on the Hugging Face Model Hub.
+
+Repository:
+
+hiteshsharma/predictive-maintenance-model
+
+The repository is used to centralize the trained model and supporting model artifacts for deployment and reuse.
+
+16. Streamlit Application
+
+An interactive Streamlit application has been developed for model inference.
+
+The application allows users to enter engine sensor parameters and obtain:
+
+Predicted engine condition
+Prediction confidence
+Business decision-support guidance
+
+Example output:
+
+Prediction: Engine Condition Class 0
+Prediction Confidence: 72.00%
+
+The application provides an early-warning mechanism that can support condition-based maintenance decisions.
+
+17. Deployment Architecture
+
+The deployment workflow is:
+
+User
+  |
+  v
+Streamlit Application
+  |
+  v
+Hugging Face Model Repository
+  |
+  v
+Optimized Random Forest
+  |
+  v
+Engine Condition Prediction
+  |
+  v
+Maintenance Decision Support
+
+The application uses the registered model rather than requiring the user to manually train the model before making predictions.
+
+18. Docker Containerization
+
+The Streamlit application is containerized using Docker.
+
+The Docker image:
+
+Uses a Python base image.
+Installs application dependencies.
+Copies the Streamlit application.
+Exposes port 8501.
+Starts the Streamlit application.
+
+Docker provides a reproducible deployment environment and reduces dependency-related deployment issues.
+
+19. CI/CD Using GitHub Actions
+
+GitHub Actions is implemented to automatically validate the project.
+
+The CI/CD workflow performs:
+
+Code Push
+   |
+   v
+Checkout Repository
+   |
+   v
+Set Up Python
+   |
+   v
+Install Dependencies
+   |
+   v
+Validate Application Syntax
+   |
+   v
+Validate Dockerfile
+   |
+   v
+Build Docker Image
+   |
+   v
+Verify Docker Image
+   |
+   v
+Pipeline Completed
+
+The GitHub Actions pipeline successfully validates the Streamlit application and Docker deployment artifact.
+
+20. Project Repository Structure
+predictive_maintenance_project/
+│
+├── .github/
+│   └── workflows/
+│       └── mlops.yml
+│
+├── deployment/
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirements.txt
+│
+├── model_building/
+│   ├── prep.py
+│   ├── train.py
+│   └── model_registry.py
+│
+└── README.md
+21. End-to-End MLOps Lifecycle
+
+The complete project lifecycle is:
+
+Industrial Sensor Data
+        |
+        v
+Hugging Face Dataset Hub
+        |
+        v
+Data Exploration & EDA
+        |
+        v
+Data Cleaning
+        |
+        v
+Feature Engineering
+        |
+        v
+Train/Test Split
+        |
+        v
+Hugging Face Train/Test Data
+        |
+        v
+Model Benchmarking
+        |
+        v
+Random Forest
+        |
+        v
+GridSearchCV + 5-Fold CV
+        |
+        v
+Final Model Evaluation
+        |
+        +------------------+
+        |                  |
+        v                  v
+      MLflow        Hugging Face Model Hub
+        |                  |
+        +--------+---------+
+                 |
+                 v
+        Streamlit Application
+                 |
+                 v
+           Docker Image
+                 |
+                 v
+         GitHub Actions CI/CD
+                 |
+                 v
+        Deployment Validation
+22. Business Recommendations
+
+Based on the project findings, the following actions are recommended:
+
+Implement continuous monitoring of critical engine sensors.
+Use the model as an early-warning signal for condition-based maintenance.
+Investigate abnormal pressure, temperature and RPM combinations.
+Integrate predictions with existing maintenance management processes.
+Establish automated alerts for high-risk engine conditions.
+Continuously collect new operational data.
+Periodically retrain the model as new data becomes available.
+Maintain version-controlled datasets and models.
+Continue monitoring model performance using MLflow.
+Use model feature importance to support engineering investigation and sensor prioritization.
+23. Business Impact
+
+The predictive maintenance solution can support organizations by:
+
+Reducing unplanned downtime
+Improving equipment availability
+Supporting proactive maintenance planning
+Reducing emergency maintenance requirements
+Improving maintenance resource allocation
+Increasing operational efficiency
+Enabling data-driven maintenance decisions
+
+The model should be used as a decision-support mechanism alongside engineering expertise and established maintenance procedures.
+
+24. Limitations
+
+The current implementation is based on the available historical sensor dataset and should therefore be validated against real production conditions before operational deployment.
+
+The current model should not be interpreted as a standalone replacement for engineering inspection.
+
+Additional production considerations include:
+
+Real-time sensor integration
+Model drift monitoring
+Production data validation
+Threshold calibration
+Alert management
+Continuous retraining
+Operational monitoring
+25. Future Enhancements
+
+Potential future improvements include:
+
+Integration with IoT-enabled sensor networks.
+Real-time sensor streaming.
+REST API deployment using FastAPI or Flask.
+Cloud deployment using AWS, Azure or Google Cloud.
+Kubernetes-based orchestration.
+Automated model deployment.
+Model drift detection.
+Real-time model performance monitoring.
+Explainable AI using SHAP or LIME.
+Integration with maintenance management systems.
+Advanced maintenance dashboards.
+26. Reproducibility
+
+The project uses:
+
+Version-controlled Python scripts
+Hugging Face Dataset Hub
+Hugging Face Model Hub
+MLflow experiment tracking
+Docker
+GitHub Actions
+
+These components support reproducibility across data preparation, model training, experiment tracking and deployment validation.
+
+27. Key Project Deliverables
+Data & EDA
+Dataset registration
+Data overview
+Target distribution
+Univariate analysis
+Bivariate analysis
+Multivariate analysis
+Business observations and insights
+Machine Learning
+Baseline model comparison
+Random Forest optimization
+GridSearchCV
+5-fold cross-validation
+Final model evaluation
+Confusion matrix
+ROC curve
+Feature importance
+MLOps
+MLflow experiment tracking
+Hugging Face Dataset registration
+Hugging Face Model registration
+Streamlit application
+Docker containerization
+GitHub Actions CI/CD
+28. Conclusion
+
+This project demonstrates an end-to-end Predictive Maintenance solution combining Machine Learning with modern MLOps practices.
+
+The solution progresses from industrial sensor data exploration and feature engineering through model benchmarking, hyperparameter optimization, experiment tracking, model registration and application deployment.
+
+The optimized Random Forest model provides a practical early-warning mechanism for identifying engine conditions that may require maintenance.
+
+The integration of MLflow, Hugging Face, Streamlit, Docker and GitHub Actions strengthens the solution by improving reproducibility, model governance, deployment readiness and automation.
+
+Overall, the project demonstrates how predictive analytics and MLOps can be combined to support proactive maintenance planning, reduce operational risk and improve equipment availability.
