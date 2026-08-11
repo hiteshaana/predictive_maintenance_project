@@ -1,0 +1,56 @@
+name: Predictive Maintenance MLOps
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+
+  build-and-validate:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r predictive_maintenance_project/deployment/requirements.txt
+
+      - name: Validate application syntax
+        run: |
+          python -m py_compile predictive_maintenance_project/deployment/app.py
+
+      - name: Validate Dockerfile
+        run: |
+          test -f predictive_maintenance_project/deployment/Dockerfile
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t predictive-maintenance-app:latest \
+            predictive_maintenance_project/deployment
+
+      - name: Verify Docker image
+        run: |
+          docker images predictive-maintenance-app:latest
+
+      - name: Pipeline completed
+        run: |
+          echo "=========================================="
+          echo "Predictive Maintenance MLOps Pipeline"
+          echo "=========================================="
+          echo "Python validation      : PASSED"
+          echo "Application validation : PASSED"
+          echo "Docker build           : PASSED"
+          echo "=========================================="
