@@ -1,3 +1,5 @@
+
+"""
 Predictive Maintenance - Streamlit Deployment Application
 
 Final MLOps deployment application.
@@ -469,14 +471,3 @@ st.caption(
     "Predictive Maintenance | ML + MLOps | "
     "Hugging Face Model Hub | Streamlit"
 )
-'''
-
-app_path = deployment_dir / "app.py"
-
-app_path.write_text(
-    app_code,
-    encoding="utf-8"
-)
-
-print("✅ app.py created successfully")
-print(f"Location: {app_path}")
