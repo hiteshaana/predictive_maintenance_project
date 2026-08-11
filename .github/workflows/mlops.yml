@@ -25,21 +25,21 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r predictive_maintenance_project/deployment/requirements.txt
+          pip install -r deployment/requirements.txt
 
       - name: Validate application syntax
         run: |
-          python -m py_compile predictive_maintenance_project/deployment/app.py
+          python -m py_compile deployment/app.py
 
       - name: Validate Dockerfile
         run: |
-          test -f predictive_maintenance_project/deployment/Dockerfile
+          test -f deployment/Dockerfile
 
       - name: Build Docker image
         run: |
           docker build \
             -t predictive-maintenance-app:latest \
-            predictive_maintenance_project/deployment
+            deployment
 
       - name: Verify Docker image
         run: |
