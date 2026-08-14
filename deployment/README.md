@@ -11,13 +11,42 @@ app_port: 8501
 
 Machine Learning based engine condition prediction application.
 
-The application uses a Random Forest classifier trained on engine sensor parameters and engineered features.
+## Overview
 
-## Features
+This application predicts engine condition using sensor readings and
+engineered features generated from the input parameters.
 
-- Engine condition prediction
-- Six engine sensor inputs
-- Four engineered features
-- Hugging Face Model Hub integration
-- Streamlit interface
-- Docker-based deployment
+## Input Sensors
+
+- Engine RPM
+- Lub Oil Pressure
+- Fuel Pressure
+- Coolant Pressure
+- Lub Oil Temperature
+- Coolant Temperature
+
+## Engineered Features
+
+- Temperature Difference
+- Total Pressure
+- Pressure Ratio
+- RPM Temperature Interaction
+
+## Machine Learning Model
+
+Random Forest Classifier
+
+## MLOps Components
+
+- Hugging Face Dataset
+- Hugging Face Model Hub
+- MLflow experiment tracking
+- Streamlit application
+- Docker containerization
+- GitHub Actions CI/CD
+
+## Deployment
+
+The application is packaged as a Docker-based Hugging Face Space.
+
+The application listens on port 8501.
